@@ -1,0 +1,38 @@
+# Sched
+
+> Sched is a free, interactive CPU scheduling simulator. A person enters processes (ID, arrival time, burst time, priority), picks Round Robin or non-preemptive Priority scheduling, and sees the resulting Gantt chart, the ready queue at every step, and each process's completion, turnaround and waiting time. The scheduling logic is written in C++ using a circular queue, a binary min-heap and a linked list. The API is Node.js and the interface is React.
+
+It was built as a Data Structures and Algorithms project (academic year 2026-27, CSE Section 2) by Harsh Jagtap and Prarthana Sharma.
+
+## What the site does
+
+- Round Robin scheduling with a configurable time quantum, implemented with a circular queue. A process that does not finish in its quantum is added back at the rear.
+- Non-preemptive Priority scheduling, implemented with a binary min-heap. A smaller priority number means higher priority. Ties go to the earlier arrival.
+- Gantt chart with a time axis, idle periods, and a step-by-step playback of the CPU's decisions.
+- Results table with completion time, turnaround time and waiting time per process, plus average waiting time and average turnaround time.
+
+## Formulas
+
+- Turnaround time = completion time - arrival time
+- Waiting time = turnaround time - burst time
+- Average = total across processes / number of processes
+
+## Data structures
+
+- Circular queue: array with front and rear positions that wrap around using the remainder of the capacity. Used by Round Robin.
+- Binary min-heap: priority queue stored in an array, ordered by priority number, then arrival time. Insert and remove are O(log n). Used by Priority scheduling.
+- Singly linked list: stores process records in input order and receives the computed times.
+
+## API
+
+`POST /api/schedule` with JSON `{"algorithm":"rr"|"priority","quantum":2,"processes":[{"pid":"P1","at":0,"bt":5,"pr":2}]}` returns `gantt` (slices with `pid`, `start`, `end`, `ready`), `processes` (with `ct`, `tat`, `wt`), `avgWT` and `avgTAT`. For Round Robin it also returns `queue`: the circular queue's capacity and, for every enqueue and dequeue, the array contents, FRONT and REAR. Limits: 1 to 50 processes, integer values, unique PIDs.
+
+## Pages
+
+- [Simulator](https://sched.example.com/#bench): enter processes and run a simulation
+- [Data structures](https://sched.example.com/#how): how the circular queue, heap and linked list are used
+- [Formulas](https://sched.example.com/#formulas): how the times are calculated
+
+## Optional
+
+- [Sitemap](https://sched.example.com/sitemap.xml)

@@ -1,0 +1,4 @@
+node_modules/
+backend/scheduler
+cpp/scheduler
+.DS_Store
