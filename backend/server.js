@@ -7,14 +7,20 @@ import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const CPP_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../cpp');
+const HERE = path.dirname(fileURLToPath(import.meta.url));
+const CPP_DIR = path.join(HERE, 'cpp'); // the C++ engine now lives inside the backend folder
 const BIN = path.join(CPP_DIR, process.platform === 'win32' ? 'scheduler.exe' : 'scheduler');
-if (!existsSync(BIN)) {
+if (!existsSync(BIN)) { // normally built by `npm install`; this is the fallback
   console.log('Compiling C++ scheduler...');
-  execFileSync('g++', ['-O2', '-std=c++17', '-o', BIN, path.join(CPP_DIR, 'scheduler.cpp')]);
+  try {
+    execFileSync('g++', ['-O2', '-std=c++17', '-o', BIN, path.join(CPP_DIR, 'scheduler.cpp')]);
+  } catch {
+    console.error('Could not compile the C++ scheduler. Install g++ (C++17) and run "npm run build".');
+    process.exit(1);
+  }
 }
 
-const DIST = path.resolve(CPP_DIR, '../frontend/dist');
+const DIST = path.resolve(HERE, '../frontend/dist');
 const app = express();
 app.use(compression());
 app.use(cors());
